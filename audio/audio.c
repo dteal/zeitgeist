@@ -25,7 +25,8 @@ void callback(freenect_device* dev, int num_samples,
             int32_t* mic1, int32_t* mic2,
             int32_t* mic3, int32_t* mic4,
             int16_t* cancelled, void *unknown){
-    printf("Microphone data received!");
+    //printf("Microphone data received!\n");
+    //printf("%d\t%d\t%d\t%d\n", mic1[0], mic2[0], mic3[0], mic4[0]);
 }
 
 void stop(int sig){
@@ -41,8 +42,12 @@ int main(int argc, char** argv){
     }
     printf("Done.\n");
 
+    printf("Selecting audio device...\n");
+    freenect_select_subdevices(f_context, FREENECT_DEVICE_AUDIO);
+    printf("Done.\n");
+
     printf("Setting log level...\n");
-    freenect_set_log_level(f_context, FREENECT_LOG_SPEW);
+    freenect_set_log_level(f_context, FREENECT_LOG_FATAL);
     printf("Done.\n");
 
     printf("Finding devices...\n");
@@ -62,6 +67,12 @@ int main(int argc, char** argv){
     }
     printf("Done.\n");
 
+    printf("Initializing ephemeral data...\n");
+    user_data state;
+    state.data = 0;
+    freenect_set_user(f_device, &state);
+    printf("Done.\n");
+
     printf("Setting audio data callback...\n");
     freenect_set_audio_in_callback(f_device, callback);
     printf("Done.\n");
@@ -79,9 +90,8 @@ int main(int argc, char** argv){
     signal(SIGINT, stop);
     printf("Done.\n");
 
-    // process
     printf("Beginning processing...\n");
-    while(!die && freenect_process_events(f_context) != 0){ }
+    while(!die && freenect_process_events(f_context) >= 0){}
     printf("Done processing.\n");
 
     printf("Shutting down.\n");
