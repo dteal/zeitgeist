@@ -16,7 +16,7 @@ carrier2 = np.sin(2*np.pi*fs*2/fm*f2*times)
 blank = times*0
 signal = np.concatenate((carrier1[:int(fm/2)], carrier2[int(fm/2):]))
 
-if False:
+if True:
     plt.plot(times, signal)
     plt.title('Transmitted Signal')
     plt.xlabel('Time (s)')
@@ -47,9 +47,9 @@ signal_left = signal_left + 10*np.sin(2*np.pi*400*times)
 signal_right = signal[:]# + np.random.normal(0, 1, fm)
 signal_right = signal_right + 10*np.sin(2*np.pi*200*times)
 signal_right = signal_right*0.5
-signal_right = np.roll(signal_right, int(30))
+signal_right = np.roll(signal_right, int(-50))
 
-if False:
+if True:
     plt.plot(times, signal_left, label='left')
     plt.plot(times, signal_right, label='right')
     plt.title('Received Signals')
@@ -68,7 +68,7 @@ def read(s):
 
 read_left = read(signal_left)
 read_right = read(signal_right)
-if False:
+if True:
     plt.plot(times, read_left, label='left')
     plt.plot(times, read_right, label='right')
     plt.title('Read Signals')
@@ -80,13 +80,18 @@ if False:
 # compare signals to determine phase difference
 comp = corr(read_left, read_right)
 diff = comp.argmax()
+dist = diff
+if diff > fm/2:
+    dist = diff-fm
 if True:
     plt.axvline(x=times[diff], color='gray')
     plt.axvline(x=times[0], color='gray')
     plt.axvline(x=times[-1], color='gray')
     plt.plot(times, comp)
     plt.plot(times[diff], comp[diff], 'o', color='orange')
-    plt.title('Signal Phase Difference of {}'.format(diff))
+    plt.title('Signal Phase Difference of {}'.format(dist))
+    plt.xlabel('Time (s)')
+    plt.ylabel('Right/Left Correlation')
     plt.show()
 
 
