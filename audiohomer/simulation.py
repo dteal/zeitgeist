@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-sample.py
+simulation.py
 
 This file runs a simulation of receiving a two-tone FSK signal used for acoustic direction tracking.
 """

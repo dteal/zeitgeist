@@ -35,6 +35,12 @@ modulated2 = carrier2 * modulator2
 signal = modulated1 + modulated2
 
 def writefile(data, name):
+    """
+    Writes data array to wav file of given name.
+    data is 1D numpy array of floats in [-1, 1].
+    name is name of file.
+    """
+    data = (data*2147483647).astype(np.int32)
     data = np.concatenate([data]*rpt)
     siw.write(name, fs, data)
 
