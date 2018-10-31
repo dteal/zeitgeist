@@ -5,6 +5,8 @@ import freenect
 import cv2
 import numpy as np
 
+position = [0,0]
+
 def get_image_frame():
     frame, _ = freenect.sync_get_video()
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -12,10 +14,18 @@ def get_image_frame():
 
 def get_depth_frame():
     frame, _ = freenect.sync_get_depth()
-    frame = frame.astype(np.uint8)
+    #frame = frame.astype(np.uint8)
     return frame
 
+def callback(event, x,y, flags, param):
+    global position
+    position = [x, y]
+
 if __name__ == '__main__':
+
+    cv2.namedWindow('image')
+    cv2.setMouseCallback('image', callback)
+
     while True:
 
         # display images
@@ -41,18 +51,33 @@ if __name__ == '__main__':
                     maxarea = area
                     maxindex = len(newcontours)-1
 
+        # detect obstacles
+        depth = get_depth_frame()
+        mindepths = np.min(depth, axis=0)
+        for i in range(len(mindepths)):
+            if mindepths[i] < 600:
+                cv2.line(image, (i,0), (i,30), (0,0,255),1)
+
+        # prepare info
+        x = position[0]; y = position[1]
+        infostring = ['Position: ({}, {})'.format(x, y),
+                        'HSV: ({:3}, {:3}, {:3})'.format(hsv[y,x,0], hsv[y,x,1], hsv[y,x,2]),
+                        'Depth: ({})'.format(depth[y,x])]
+
+        # find object
         if len(newcontours) == 0:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(image, 'No object found!', (10, 30), font, 1, (255,255,255), 2, cv2.LINE_AA)
+            infostring.append('No object found!')
         else:
             x,y,w,h = cv2.boundingRect(newcontours[maxindex])
             cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 2)
-            
 
-        depth = get_depth_frame()
-        #cv2.imshow('RGB', image)
-        cv2.imshow('mask', image)
+        # display info
+        for i in range(len(infostring)):
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(image, infostring[i], (10, 470-30*i), font, .7, (255,255,255), 2, cv2.LINE_AA)
+           
         #cv2.imshow('Depth', depth)
+        cv2.imshow('image', image)
 
         # exit on 'q'
         if cv2.waitKey(1) & 0xFF == ord('q'):
