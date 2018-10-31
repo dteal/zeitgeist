@@ -47,4 +47,6 @@ def writefile(data, name):
 writefile(lowfreq, 'fsk_lowfreq.wav')
 writefile(carrier1, 'fsk_f1.wav')
 writefile(carrier2, 'fsk_f2.wav')
+writefile(modulated1, 'fsk_f1_periodic.wav')
+writefile(modulated2, 'fsk_f2_periodic.wav')
 writefile(signal, 'fsk_complete.wav')
