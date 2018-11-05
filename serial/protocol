@@ -1,0 +1,45 @@
+packet from button board
+========================
+
+aa (header)
+
+01 (mode; 01 off, 02 on)
+
+00 (becomes 03 when single pressed)
+
+00 (power output; 2's complement) (normally 00, max 08, min, can signal both)?
+
+00 (unknown, zero?)
+
+xx (current angle of board as measured by encoder)
+
+00 (unknown, zero?)
+
+xx xx (current speed of wheel as measured by encoder; 2's complement)
+
+00 00 00 00 00 00 (unknown, zero?)
+
+xx (checksum8 modulo 256 of previous 15 bytes (see https://www.scadacore.com/tools/programming-calculators/online-checksum-calculator/))
+
+packet from other board
+=======================
+
+aa (header)
+
+01 (mode; 01 off, 02 on; can be initialized by either board?)
+
+00 (unknown, zero?)
+
+00 (becomes 03 when single pressed)
+
+00 (unknown, zero?)
+
+xx (current angle of board as measured by encoder)
+
+xx xx (current speed of wheel as measured by encoder; 2's complement)
+
+e4 04 dc 04 (unknown, first and third byte fluctuate by a bit)
+
+00 00 00  (unknown, zero?)
+
+xx (checksum, same)
