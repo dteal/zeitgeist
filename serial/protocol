@@ -1,5 +1,12 @@
-packet from button board
-========================
+# Overview
+
+There are two (seemingly) identical (hardware and software) control boards in the hoverboard - one on each side. They are connected by a cable with what functionally appear to be ground, RX, TX, and 5V power pins, in that order. The RX and TX wires carry serial communication at 115200 baud.
+
+The boards continually send 16-byte packets to each other in the following formats.
+
+If a packet is not sent, the other board seems to complain and shut down. However, the sent data does not seem to control the boards in any other way (this can be used as a read-only communication channel from the hoverboard to an external controller).
+
+# Packet from button board
 
 aa (header)
 
@@ -21,8 +28,7 @@ xx xx (current speed of wheel as measured by encoder; 2's complement)
 
 xx (checksum8 modulo 256 of previous 15 bytes (see https://www.scadacore.com/tools/programming-calculators/online-checksum-calculator/))
 
-packet from other board
-=======================
+# Packet from other board
 
 aa (header)
 
@@ -43,3 +49,10 @@ e4 04 dc 04 (unknown, first and third byte fluctuate by a bit)
 00 00 00  (unknown, zero?)
 
 xx (checksum, same)
+
+# Chips
+
+IMU:
+
+INVENSENSE
+RPU-6052C

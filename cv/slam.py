@@ -26,6 +26,10 @@ if __name__ == '__main__':
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', callback)
 
+    depths1 = np.zeros((50))
+    depths2 = np.zeros((50))
+    depths3 = np.zeros((50))
+
     while True:
 
         # display images
@@ -39,6 +43,7 @@ if __name__ == '__main__':
         color_min_hsv = np.array([170, 128, 128])
         color_all_hsv = np.array([180, 255, 255])
         #mask = cv2.inRange(hsv, color_min_hsv, color_max_hsv)
+        # 480 x 640 x 3
         mask = cv2.inRange(hsv, color_none_hsv, color_max_hsv) + cv2.inRange(hsv, color_min_hsv, color_all_hsv)
         res = cv2.bitwise_and(gray, gray, mask=mask)
         res = cv2.blur(res, (40,40))
@@ -64,10 +69,22 @@ if __name__ == '__main__':
                 cv2.line(image, (i,0), (i,30), (0,0,255),1)
 
         # prepare info
+        depths1 = np.roll(depths1, 1)
+        depths2 = np.roll(depths2, 1)
+        depths3 = np.roll(depths3, 1)
+        depths1[0] = np.average(depth[230:250,310:330])
+        depths2[0] = np.average(depth[230:250,465:485])
+        depths3[0] = np.average(depth[230:250,520:540])
         x = position[0]; y = position[1]
         infostring = ['Position: ({}, {})'.format(x, y),
                         'HSV: ({:3}, {:3}, {:3})'.format(hsv[y,x,0], hsv[y,x,1], hsv[y,x,2]),
-                        'Depth: ({})'.format(depth[y,x])]
+                        'Depth: ({})'.format(depth[y,x]),
+                        'Average Depth 1: ({})'.format(np.mean(depths1)),
+                        'Average Depth 2: ({})'.format(np.mean(depths2)),
+                        'Average Depth 3: ({})'.format(np.mean(depths3))]
+        cv2.rectangle(image, (310,230), (330,250), (0,0,255), 2)
+        cv2.rectangle(image, (465,230), (485,250), (0,0,255), 2)
+        cv2.rectangle(image, (520,230), (540,250), (0,0,255), 2)
 
         # find object
         if len(newcontours) == 0:
@@ -83,7 +100,7 @@ if __name__ == '__main__':
            
         #cv2.imshow('Depth', depth)
         cv2.imshow('image', image)
-
+        cv2.imshow('depth', depth.astype(np.int8))
         # exit on 'q'
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
