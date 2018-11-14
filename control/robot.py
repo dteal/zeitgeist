@@ -5,6 +5,7 @@ import multiprocessing
 import freenect
 import numpy as np
 import serial
+import zmq
 
 class MotorControlProcess(multiprocessing.Process):
     """Send commands to motor control board."""
@@ -43,7 +44,7 @@ class KinectControlProcess(multiprocessing.Process):
         while not self.done:
             frame, _ = freenect.sync_get_video()
             print('got frame!')
-            #self.queue.put(frame)
+            self.queue.put(frame)
 
 def run():
     """Main loop."""
@@ -56,8 +57,22 @@ def run():
     motor.start()
     kinect.start()
 
-    while True:
-        pass
+    port = 15787
+    context = zmq.Context()
+    host = context.socket(zmq.REP)
+    host.bind('tcp://*:{}'.format(port))
+
+    done = False
+    while not done:
+        command = host.recv_string()
+        print(command)
+        if command == 'q':
+            done = True
+        try:
+            frame = image_queue.get(block=False)
+            host.send_string('image!: {}'.format(frame.shape))
+        except multiprocessing.queue.Empty:
+            host.send_string('ack{}'.format(image_queue.qsize())
 
     motor.done = True
     kinect.done = True
