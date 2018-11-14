@@ -14,7 +14,7 @@ class MotorControlProcess(multiprocessing.Process):
         self.done = False
         self.speed = 0
         self.steer = 0
-        self.port = 'dev/ttyUSB0'
+        self.port = '/dev/ttyUSB0'
         self.ser = serial.Serial(self.port, 19200)
         print(self.ser)
 
