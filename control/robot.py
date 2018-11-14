@@ -72,7 +72,7 @@ def run():
             frame = image_queue.get(block=False)
             host.send_string('image!: {}'.format(frame.shape))
         except multiprocessing.queue.Empty:
-            host.send_string('ack{}'.format(image_queue.qsize())
+            host.send_string('ack{}'.format(image_queue.qsize()))
 
     motor.done = True
     kinect.done = True
