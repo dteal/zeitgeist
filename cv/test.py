@@ -23,8 +23,8 @@ def callback(event, x,y, flags, param):
 
 if __name__ == '__main__':
 
-    cv2.namedWindow('image')
-    cv2.setMouseCallback('image', callback)
+    #cv2.namedWindow('image')
+    #cv2.setMouseCallback('image', callback)
 
     while True:
 
