@@ -37,7 +37,9 @@ class CommProcess(multiprocessing.Process):
                 robot.send_string(command)
                 print("Sent to robot: {}".format(command))
                 response = robot.recv_string()
-                print("Received from robot: {}".format(response))
+                if response != '':
+                    #print("Received from robot: {}".format(response))
+                    pass
 
 def run():
 
@@ -125,7 +127,7 @@ def run():
         right_speed = round(right_speed)
 
         if flag or old_left != left_speed or old_right != right_speed or time.time()-timer > 0.05:
-            command_queue.put('c {} {} {} {} {}'.format({True:1,False:0}[stopped], {True:1,False:0}[automatic_mode], left_speed, right_speed, song))
+            command_queue.put('{} {} {} {} {}'.format({True:1,False:0}[stopped], {True:1,False:0}[automatic_mode], left_speed, right_speed, song))
             timer = 0
 
         screen.fill((255, 255, 255))
