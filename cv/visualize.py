@@ -23,8 +23,8 @@ def callback(event, x,y, flags, param):
 
 if __name__ == '__main__':
 
-    #cv2.namedWindow('image')
-    #cv2.setMouseCallback('image', callback)
+    cv2.namedWindow('image')
+    cv2.setMouseCallback('image', callback)
 
     while True:
 
@@ -83,13 +83,13 @@ if __name__ == '__main__':
 
         print('Calculated frame!')
            
-        #cv2.imshow('Depth', depth)
-        #cv2.imshow('image', image)
+        cv2.imshow('Depth', depth)
+        cv2.imshow('image', image)
 
         # exit on 'q'
-        #if cv2.waitKey(1) & 0xFF == ord('q'):
-        #    break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-    #cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 
 

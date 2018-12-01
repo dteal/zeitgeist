@@ -30,6 +30,7 @@ if __name__ == '__main__':
 
         # display images
         image = get_image_frame()
+        cv2.imshow('image', image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         color_min_hsv = np.array([25, 128, 32])
@@ -88,7 +89,6 @@ if __name__ == '__main__':
             cv2.putText(image, infostring[i], (10, 470-30*i), font, .7, (255,255,255), 2, cv2.LINE_AA)
            
         #cv2.imshow('Depth', depth)
-        cv2.imshow('image', image)
         cv2.imshow('mask', thresh)
 
         # exit on 'q'
